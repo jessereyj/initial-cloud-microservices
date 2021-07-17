@@ -1,0 +1,117 @@
+info:
+  app:
+    name: Microservice Gateway Local
+    version: v1
+    tags:
+      environment: ${SPRING_PROFILE:local}  
+#Spring Profile/Environment
+spring:
+  profiles:
+    active: ${SPRING_PROFILE:local}
+  cloud:
+    kubernetes:
+      config:
+        name: microgateway
+        namespace: cloud-micro-local
+      secrets:
+        name: microgateway 
+        namespace: cloud-micro-local    
+    gateway:
+      globalcors:
+        add-to-simple-url-handler-mapping: true
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "*"
+            allowedHeaders:
+            - Authorization
+            - Content-Type
+            - Access-Control-Allow-Origin
+            - Access-Control-Allow-Credentials
+            allowedMethods:
+            - GET
+            - POST
+            - PUT
+            - DELETE
+      discovery:
+        locator:
+          enabled: true
+      routes:
+      - id: user
+        uri: http://localhost:8081
+        predicates:
+        - Path=/user/**
+        filters:
+        - RewritePath=/user/(?<path>.*), /$\{path}
+      - id: deposit
+        uri: http://localhost:8082
+        predicates:
+        - Path=/deposit/**
+        filters:
+        - RewritePath=/deposit/(?<path>.*), /$\{path}    
+      - id: withdrawal
+        uri: http://localhost:8083
+        predicates:
+        - Path=/withdrawal/**
+        filters:
+        - RewritePath=/withdrawal/(?<path>.*), /$\{path}
+      - id: mock-server
+        uri: http://localhost:8791
+        predicates:
+        - Path=/mock-server/**
+        filters:
+        - RewritePath=/mock-server/(?<path>.*), /$\{path}                             
+      - id: openapi
+        uri: http://localhost:${server.port}
+        predicates:
+        - Path=/v2/api-docs/**
+        filters:
+        - RewritePath=/v2/api-docs/(?<path>.*), /$\{path}/v2/api-docs?group=$\{path}
+  resources:
+    cache:
+      period: 31536000
+      cachecontrol:
+        max-age: 31536000
+    chain:
+      html-application-cache: true
+      enabled: true
+      strategy:
+        content:
+          enabled: true
+          paths: /webjars/swagger-ui/**.*
+#LOG PATTERN
+logging:
+  level:
+    root: INFO
+    com:
+      xyz:
+        microservices: DEBUG
+    org:
+      springframework:
+        cloud:
+          gateway: DEBUG
+          kubernetes: INFO
+        boot:
+          autoconfigure:
+            web: INFO
+        web:
+          reactive: INFO
+        http:
+          server:
+            reactive: INFO
+springdoc:
+   api-docs:
+     path: /v2/api-docs
+     groups:
+       enabled: true
+   show-actuator: false
+   swagger-ui:
+     path: /
+server:
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+    mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
+    min-response-size: 1024
+  http2:
+    enabled: true
