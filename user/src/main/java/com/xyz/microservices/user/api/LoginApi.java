@@ -18,15 +18,12 @@ import com.xyz.microservices.user.model.LoginRequest;
 import com.xyz.microservices.user.model.LoginResponse;
 import com.xyz.microservices.user.service.LoginService;
 
-import io.swagger.annotations.ApiOperation;
-
 @RestController
 @RequestMapping(ApiConstant.API_V1)
 public class LoginApi {
 
 	@Autowired LoginService loginService;
 	
-	@ApiOperation(value = "User LDAP Auth API")
 	@PostMapping(value = "/auth", 
 	consumes= {MediaType.APPLICATION_JSON_VALUE}, 
 	produces= {MediaType.APPLICATION_JSON_VALUE})
@@ -34,7 +31,6 @@ public class LoginApi {
 		return loginService.ldapAuth(request, response, loginRequest);
 	}
 	
-	@ApiOperation(value = "User LDAP Logout API")
 	@PostMapping(value = "/logout", 
 	consumes= {MediaType.APPLICATION_JSON_VALUE}, 
 	produces= {MediaType.APPLICATION_JSON_VALUE})
