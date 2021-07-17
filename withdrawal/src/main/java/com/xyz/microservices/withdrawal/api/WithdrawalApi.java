@@ -23,9 +23,6 @@ import com.xyz.microservices.withdrawal.model.ApiResponse;
 import com.xyz.microservices.withdrawal.model.CashWithdrawalRequest;
 import com.xyz.microservices.withdrawal.service.WithdrawalService;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-
 @RestController
 @RequestMapping(ApiConstant.API_V1)
 public class WithdrawalApi {
@@ -38,7 +35,6 @@ public class WithdrawalApi {
 		this.circuitBreakerFactory = circuitBreakerFactory;
 	}
 	
-	@ApiOperation(value = "Cash Withdrawal Submission API", authorizations = {@Authorization(value="apiKey") })
 	@PostMapping(value = "/cash", consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ApiResponse> cashWithdrawal(HttpServletRequest request, @RequestBody @Valid CashWithdrawalRequest cashWithdrawalRequest)  throws JsonProcessingException {
 		return service.cashWithdrawal(request, cashWithdrawalRequest);

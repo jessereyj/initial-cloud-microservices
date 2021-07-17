@@ -23,9 +23,6 @@ import com.xyz.microservices.deposit.model.ApiResponse;
 import com.xyz.microservices.deposit.model.CashDepositRequest;
 import com.xyz.microservices.deposit.service.DepositService;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.Authorization;
-
 @RestController
 @RequestMapping(ApiConstant.API_V1)
 public class DepositApi {
@@ -38,7 +35,6 @@ public class DepositApi {
 		this.circuitBreakerFactory = circuitBreakerFactory;
 	}
 	
-	@ApiOperation(value = "Cash Deposit Submission API", authorizations = {@Authorization(value="apiKey") })
 	@PostMapping(value = "/cash", consumes={MediaType.APPLICATION_JSON_VALUE}, produces={MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<ApiResponse> cashDeposit(HttpServletRequest request, @RequestBody @Valid CashDepositRequest cashDepositRequest)  throws JsonProcessingException {
 		return service.cashDeposit(request, cashDepositRequest);
